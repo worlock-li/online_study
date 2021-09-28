@@ -116,6 +116,47 @@ public class TeacherController {
         return remove?Result.ok():Result.error();
     }
 
+    /**
+     * 添加讲师
+     * @return
+     */
+    @ApiOperation("添加讲师")
+    @PostMapping("/save")
+    public Result deleteById(@RequestBody Teacher teacher) {
+        boolean isSave = teacherService.save(teacher);
+        if (isSave) {
+            return Result.ok();
+        } else {
+            return Result.error();
+        }
+    }
+
+    /**
+     * 根据id查询
+     * @return
+     */
+    @ApiOperation("根据id查询")
+    @GetMapping("/getById/{id}")
+    public Result getById(@PathVariable String id) {
+        Teacher teacher = teacherService.getById(id);
+        return Result.ok().data("teacher", teacher);
+    }
+
+    /**
+     * 修改
+     * @return
+     */
+    @ApiOperation("修改")
+    @PostMapping("/update")
+    public Result update(@RequestBody Teacher teacher) {
+        boolean isSuccess = teacherService.updateById(teacher);
+        if (isSuccess) {
+            return Result.ok().message("操作成功！");
+        } else {
+            return Result.error().message("操作失败！");
+        }
+    }
+
 
 }
 
