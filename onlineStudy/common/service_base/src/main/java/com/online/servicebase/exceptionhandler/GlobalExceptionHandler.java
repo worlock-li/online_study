@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
 
 	/**
+	 * 全局异常， 设置 @ExceptionHandler 的值，改为特定异常
 	 * @ExceptionHandler : 指定出现什么异常时执行方法
 	 * 返回result类， 需要在common_base中依赖common_utils
  	 */
