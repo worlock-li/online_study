@@ -27,6 +27,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/edu/teacher")
+@CrossOrigin
 @Api("讲师管理")
 public class TeacherController {
     @Autowired
@@ -55,7 +56,7 @@ public class TeacherController {
      * @param teacherQuery
      * @return
      */
-    @GetMapping("list/{pageNum}/{pageSize}")
+    @GetMapping("queryList/{pageNum}/{pageSize}")
     public Result list(
             TeacherQuery teacherQuery,
             @PathVariable long pageNum,
