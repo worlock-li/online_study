@@ -56,9 +56,9 @@ public class TeacherController {
      * @param teacherQuery
      * @return
      */
-    @GetMapping("queryList/{pageNum}/{pageSize}")
+    @PostMapping("queryList/{pageNum}/{pageSize}")
     public Result list(
-            TeacherQuery teacherQuery,
+            @RequestBody TeacherQuery teacherQuery,
             @PathVariable long pageNum,
             @PathVariable long pageSize) {
         Page<Teacher> page = new Page<>(pageNum, pageSize);
@@ -112,9 +112,8 @@ public class TeacherController {
     public Result deleteById(
             @ApiParam(name = "id", value = "讲师Id", required = true)
             @PathVariable String id) {
-        // 调用service查询所有
         boolean remove = teacherService.removeById(id);
-        return remove?Result.ok():Result.error();
+        return remove?Result.ok().message("删除成功"):Result.error();
     }
 
     /**
@@ -126,7 +125,7 @@ public class TeacherController {
     public Result deleteById(@RequestBody Teacher teacher) {
         boolean isSave = teacherService.save(teacher);
         if (isSave) {
-            return Result.ok();
+            return Result.ok().message("添加成功！");
         } else {
             return Result.error();
         }

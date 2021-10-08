@@ -55,7 +55,7 @@ public class Teacher implements Serializable {
     private Boolean isDeleted;
 
     @ApiModelProperty(value = "创建时间")
-                    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
