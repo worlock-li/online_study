@@ -78,9 +78,11 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
+          <router-link :to="'/teacher/edit/'+scope.row.id">
+            <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+          </router-link>
+
           <el-button
             size="mini"
             type="danger"
@@ -136,10 +138,11 @@ export default {
         })
     },
 
-    // 修改
-    handleEdit(index, row) {
-      console.log(index, row)
-    },
+    //
+    // // 修改
+    // teacherEdit(id) {
+    //   this.$router.push('/teacher/save', id)
+    // },
 
     // 删除
     removeTeacher(id) {

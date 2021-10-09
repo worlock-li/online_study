@@ -26,5 +26,22 @@ export default {
       method: 'post',
       data: teacher
     })
+  },
+
+  // 根据id获取
+  getById(id) {
+    return request({
+      url: `/edu/teacher/getById/${id}`,
+      method: 'get'
+    })
+  },
+
+  // 根据id获取
+  update(teacher) {
+    return request({
+      url: '/edu/teacher/update',
+      method: 'post',
+      data: teacher
+    })
   }
 }

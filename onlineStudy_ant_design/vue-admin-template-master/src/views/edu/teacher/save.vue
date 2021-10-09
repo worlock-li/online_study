@@ -29,7 +29,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button :disabled="saveBtnDisabled" style="width: 100px" type="primary" @click="save('teacher')">保存</el-button>
+        <el-button :disabled="saveBtnDisabled" style="width: 100px" type="primary" @click="saveOrUpdate('teacher')">保存</el-button>
       </el-form-item>
 
     </el-form>
@@ -68,20 +68,49 @@ export default {
 
     }
   },
-  created() {
+  watch: { // 监听
+    $route(to, from) { // 路有变化，方法就会执行
+      this.init()
+    }
   },
+
+  created() {
+    this.init()
+  },
+
   methods: {
-    save(teacher) {
+    init() {
+      if (this.$route.params.id) {
+        this.getById(this.$route.params.id)
+      } else {
+        this.teacher = {}
+      }
+    },
+
+    getById(id) {
+      teacherApi.getById(id).then(response => {
+        this.teacher = response.data.teacher
+      })
+    },
+
+    saveOrUpdate(teacher) {
       this.$refs[teacher].validate((valid) => {
         if (valid) {
-          teacherApi.save(this.teacher).then(response => {
-            // 提示信息
-            console.log(response.message)
-            // 回到列表页面, 路由跳转
-            this.$router.push('/teacher/table')
-          }).cache(error => {
-            console.log(error)
-          })
+          if (this.teacher.id) { // 包含id，修改
+            teacherApi.update(this.teacher).then(response => {
+              // 提示信息
+              this.$message.success(response.message)
+              // 回到列表页面, 路由跳转
+              this.$router.push('/teacher/table')
+            })
+          } else { // 不包含id, 保存
+            teacherApi.save(this.teacher).then(response => {
+              // 提示信息
+              this.$message.success(response.message)
+              // 回到列表页面, 路由跳转
+              this.$router.push('/teacher/table')
+            })
+          }
         } else {
           console.log('error submit!!')
           return false
