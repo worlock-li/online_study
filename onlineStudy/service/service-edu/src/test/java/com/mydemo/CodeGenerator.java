@@ -22,11 +22,12 @@ public class CodeGenerator {
 
         // 1、创建代码生成器
         AutoGenerator mpg = new AutoGenerator();
-
+        // C:\Users\li\Desktop\gitcode\onlineStudy\online_study\onlineStudy\service\service-edu
         // 2、全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir("D:\\file\\onlineStuSys\\online_study\\onlineStudy\\service\\service-edu" + "/src/main/java");
+        // gc.setOutputDir("D:\\file\\onlineStuSys\\online_study\\onlineStudy\\service\\service-edu" + "/src/main/java");
+        gc.setOutputDir("C:\\Users\\li\\Desktop\\gitcode\\onlineStudy\\online_study\\onlineStudy\\service\\service-edu" + "/src/main/java");
         gc.setAuthor("worlock");
         gc.setOpen(false); //生成后是否打开资源管理器
         gc.setFileOverride(false); //重新生成时文件是否覆盖
@@ -42,7 +43,7 @@ public class CodeGenerator {
         dsc.setUrl("jdbc:mysql://localhost:3306/onlinestu?serverTimezone=GMT%2B8");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("root");
+        dsc.setPassword("123456");
         dsc.setDbType(DbType.MYSQL);
         mpg.setDataSource(dsc);
 
@@ -61,7 +62,7 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
 
         // 表名
-        strategy.setInclude("edu_teacher");
+        strategy.setInclude("edu_subject");
 
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix(pc.getModuleName() + "_"); //生成实体时去掉表前缀

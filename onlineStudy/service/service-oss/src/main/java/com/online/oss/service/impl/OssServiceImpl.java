@@ -2,18 +2,14 @@ package com.online.oss.service.impl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.PutObjectRequest;
 import com.online.oss.service.OssService;
 import com.online.oss.utils.ConstantPropertiesUtil;
-import jdk.internal.util.xml.impl.Input;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class OssServiceImpl implements OssService {
@@ -30,15 +26,11 @@ public class OssServiceImpl implements OssService {
 
 		String url = "";
 		try {
-			// 获取文件真实名称
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
 			String filename = file.getOriginalFilename();
-			int of = filename.lastIndexOf(".");
-			String name = filename.substring(0 ,of);
-			String end = filename.substring(of);
-			filename = (name + "-" + sdf.format(date) + end);
+			// 生成uuid防止名称重复
+			String uuid = UUID.randomUUID().toString();
+			filename = uuid + filename;
 
 			// yourEndpoint填写Bucket所在地域对应的Endpoint。以华东1（杭州）为例，
 			// Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。
@@ -53,13 +45,18 @@ public class OssServiceImpl implements OssService {
 			OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
 			// 创建PutObjectRequest对象。
-			// 依次填写Bucket名称（例如examplebucket）和Object完整路径（例如exampledir/exampleobject.txt）。- 上传到oss的文件路径及名称
+			// 依次填写Bucket名称（例如examplebucket）
+			// 和Object完整路径（例如exampledir/exampleobject.txt）。- 上传到oss的文件路径及名称
 			// Object完整路径中不能包含Bucket名称。
 			InputStream inputStream = file.getInputStream();
-			ossClient.putObject(bucketName, filename, inputStream);
 
+			// 日期工具类
+			String datePath = new DateTime().toString("yyyy/MM/dd");
+			filename = datePath + filename;
+			ossClient.putObject(bucketName, filename, inputStream);
 			url = "https://" + bucketName + "." + endpoint + "/" + filename;
 			ossClient.shutdown();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
