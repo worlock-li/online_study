@@ -24,8 +24,30 @@
         <el-input v-model="teacher.intro" :rows="10" type="textarea" placeholder="讲师简介"/>
       </el-form-item>
 
-      <el-form-item label="头像 : ">
-        <el-button v-model="teacher.avatar" type="message">上传<i class="el-icon-upload el-icon--right"/></el-button>
+      <el-form-item label="讲师头像">
+
+        <!-- 头衔缩略图 -->
+        <pan-thumb :image="String(teacher.avatar)"/>
+        <!-- 文件上传按钮 -->
+        <el-button type="primary" icon="el-icon-upload" @click="imageCropperShow=true">更换头像</el-button>
+
+        <!--
+        v-show：是否显示上传组件
+        :key：类似于id，如果一个页面多个图片上传控件，可以做区分
+        :url：后台上传的url地址
+        @close：关闭上传组件
+        @crop-upload-success：上传成功后的回调
+          <input type="file" name="file"/>
+        -->
+        <image-cropper
+          v-show="imageCropperShow"
+          :width="300"
+          :height="300"
+          :key="imageCropperKey"
+          :url="'/eduOss/oss/upload'"
+          field="file"
+          @close="close"
+          @crop-upload-success="cropSuccess"/>
       </el-form-item>
 
       <el-form-item>
@@ -38,8 +60,11 @@
 
 <script>
 import teacherApi from '../../../api/teacher/teacher'
+import PanThumb from '../../../components/PanThumb'
+import ImageCropper from '../../../components/ImageCropper'
 
 export default {
+  components: { PanThumb, ImageCropper },
   data() {
     return {
       teacher: {},
@@ -64,7 +89,10 @@ export default {
           { required: true, message: '请输入讲师简介', trigger: 'blur' },
           { max: 50, message: '长度50个字符以内', trigger: 'change' }
         ]
-      }
+      },
+      imageCropperShow: false,
+      imageCropperKey: 0,
+      BASE_API: process.env.BASE_API // 获取config中的base_api
 
     }
   },
@@ -79,6 +107,17 @@ export default {
   },
 
   methods: {
+    close() { // 关闭上传头像框
+      this.imageCropperShow = false
+      // 上传组件初始化
+      this.imageCropperKey += 1
+    },
+    cropSuccess(data) { // 上传成功
+      this.teacher.avatar = data.url
+      this.imageCropperShow = false
+      this.imageCropperKey += 1
+    },
+
     init() {
       if (this.$route.params.id) {
         this.getById(this.$route.params.id)
