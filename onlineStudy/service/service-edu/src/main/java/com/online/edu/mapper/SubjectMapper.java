@@ -1,7 +1,9 @@
 package com.online.edu.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.online.edu.entity.Subject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.online.edu.entity.subject.OneSubject;
 
 /**
  * <p>
