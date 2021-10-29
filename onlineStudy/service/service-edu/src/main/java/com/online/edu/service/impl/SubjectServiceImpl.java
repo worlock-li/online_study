@@ -59,6 +59,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
 		// 创建返回对象
 		List<OneSubject> resultSubjects = new ArrayList<>();
 
+		// 添加一级分类
 		for (Subject subject : oneSubjectList) {
 			OneSubject oneSubject = new OneSubject();
 			oneSubject.setId(subject.getId());
@@ -66,6 +67,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
 			resultSubjects.add(oneSubject);
 		}
 
+		// 添加二级分类
 		for (OneSubject oneSubject : resultSubjects) {
 			String id = oneSubject.getId();
 			for (Subject twoSubject : twoSubjectList) {
