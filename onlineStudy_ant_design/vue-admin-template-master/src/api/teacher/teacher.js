@@ -36,12 +36,20 @@ export default {
     })
   },
 
-  // 根据id获取
+  // 修改
   update(teacher) {
     return request({
       url: '/eduService/teacher/update',
       method: 'post',
       data: teacher
+    })
+  },
+
+  // 获取所有
+  findAll() {
+    return request({
+      url: '/eduService/teacher/findAll',
+      method: 'get'
     })
   }
 }
