@@ -14,7 +14,7 @@
       </el-form-item>
 
       <!--  所属分类   -->
-      <el-form-item label="所属分类">
+      <el-form-item label="所属分类" prop="subjectId">
         <el-select v-model="courseInfo.subjectParentId" @change="changeSelect">
           <el-option
             v-for="one in subjectOneList"
@@ -45,17 +45,27 @@
 
       <!--  课程简介   -->
       <el-form-item label="课程简介" prop="description">
-        <el-input v-model="courseInfo.description" placeholder="好书！！！，学了马上从入门到放弃"/>
+        <tinymce :height="300" v-model="courseInfo.description"></tinymce>
       </el-form-item>
 
       <!--  课程封面   -->
+      <el-form-item label="课程封面">
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+          :action="BASE_API+'eduOss/oss'"
+          class="avatar-uploader">
+          <img :src="courseInfo.cover" style="width: 400px">
+        </el-upload>
+      </el-form-item>
 
       <el-form-item label="课程价格" prop="price">
         <el-input-number v-model="courseInfo.price" :min="0" controls-position="right"/>
       </el-form-item>
 
       <el-form-item label="总课时" prop="lessonNum">
-        <el-input-number v-model="courseInfo.lessonNum" :min="0" controls-position="right"/>
+        <el-input-number v-model="courseInfo.lessonNum" controls-position="right"/>
       </el-form-item>
 
       <el-form-item>
@@ -69,8 +79,12 @@
 import courseApi from '../../../api/course/course'
 import teacherApi from '../../../api/teacher/teacher'
 import subjectApi from '../../../api/subject/subject'
+import tinymce from '../../../components/Tinymce'
 
 export default {
+  components: {
+      tinymce
+  },
   data() {
     return {
       saveBtnDisabled: false, // 是否禁用
@@ -78,6 +92,7 @@ export default {
       teacherList: [], // 所有讲师
       subjectOneList: [], // 所有一级分类
       subjectTwoList: [], // 所有二级分类
+      BASE_API: process.env.BASE_API, // 接口基本地址
       courseInfo: {
         teacherId: '', // 讲师id
         subjectParentId: '', // 一级分类id
@@ -85,7 +100,7 @@ export default {
         title: '', // 标题
         price: '', // 价格
         lessonNum: '', // 总课时
-        cover: '', // 课程封面图片路径
+        cover: '/static/sucai.jpg', // 课程封面图片路径
         description: '' // 课程简介
       },
       rules: {
@@ -104,17 +119,46 @@ export default {
         ],
         teacherId: [
           { required: true, message: '请选择讲师', trigger: 'blur' }
+        ],
+        subjectId: [
+          { required: true, message: '请选择分类', trigger: 'blur' }
         ]
       }
     }
   },
 
   created() {
-    this.findAllTeacher()
-    this.getAllSubject()
+    if (this.$route.params && this.$route.params.id) {
+        this.getInfoById()
+    } else {
+        this.findAllTeacher()
+        this.getAllSubject()
+    }
   },
 
   methods: {
+    // 进入页面根据id获取
+    getInfoById() {
+        courseApi.getInfoById(this.$route.params.id).then(response => {
+
+            this.courseInfo = response.data.courseInfoVo
+            // 查询所有的分类
+            subjectApi.getAllSubject().then(res => {
+                this.subjectOneList = res.data.data
+                for (let i=0; i<this.subjectOneList.length; i++) {
+                    // 遍历所有的一级分类
+                    if (this.courseInfo.subjectParentId === this.subjectOneList[i].id) {
+                        this.subjectTwoList = this.subjectOneList[i].children
+                    }
+                }
+
+            })
+            // 查询所有讲师
+            this.findAllTeacher()
+
+        })
+    },
+
     // 添加课程基本信息
     addCourseInfo(courseInfo) {
       this.$refs[courseInfo].validate((valid) => {
@@ -135,13 +179,15 @@ export default {
     },
     // 改变一级分类
     changeSelect(value) {
-      // 框架自动封装， value就是id
+      // 框架自动封装， value=id
       // 遍历所有的一级分类， 判断当前选择的是那个一级分类，拿到选中的一级分类下的二级分类
-      for (let i = 0; i <= this.subjectOneList.length; i++) {
-        const oneSubject = this.subjectOneList[i]
-        if (oneSubject.id === value) {
+      for (let i = 0; i < this.subjectOneList.length; i++) {
+
+        if (this.subjectOneList[i].id === value) {
           // 拿到二级分类进行赋值
-          this.subjectTwoList = oneSubject.children
+          this.subjectTwoList = this.subjectOneList[i].children
+          // 清空当前的二级分类
+          this.courseInfo.subjectId = ''
         }
       }
     },
@@ -156,7 +202,30 @@ export default {
       subjectApi.getAllSubject().then(response => {
         this.subjectOneList = response.data.data
       })
+    },
+    // 上传成功执行
+    handleAvatarSuccess(res, file) {
+      this.courseInfo.cover = res.data.url
+    },
+    // 上传之后执行
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' // 是否是jpg格式的图片
+      const isLt2M = file.size / 1024 / 1024 < 10 // 图片大小是否小于10M
+      if (!isJPG) {
+        this.$message.error('只能上传jpg格式的文件')
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过10M')
+      }
+      return isLt2M && isJPG
     }
+
   }
+
 }
 </script>
+<style>
+  .tinymce-container {
+    line-height: 29px;
+  }
+</style>

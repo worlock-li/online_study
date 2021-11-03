@@ -16,5 +16,22 @@ export default {
       method: 'post',
       data: course
     })
+  },
+
+  // 修改课程基本信息
+  update(course) {
+    return request({
+      url: '/eduService/course/update',
+      method: 'post',
+      data: course
+    })
+  },
+
+  // 根据id获取
+  getInfoById(id) {
+    return request({
+      url: '/eduService/course/getCourseInfoById/' + id,
+      method: 'get',
+    })
   }
 }
