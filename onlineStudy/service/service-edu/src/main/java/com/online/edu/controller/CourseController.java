@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  *  前端控制器
@@ -30,6 +32,21 @@ public class CourseController {
 		// 添加课程数据
 		String id = courseService.addCourseInfo(courseInfoVo);
 		return Result.ok().message("添加成功!").data("id", id);
+	}
+
+
+	@GetMapping("/getCourseInfoById/{id}")
+	@ApiOperation("根据id获取")
+	public Result getCourseInfoById(@PathVariable String id) {
+		CourseInfoVo courseInfoVo = courseService.getCourseInfoById(id);
+		return Result.ok().data("courseInfoVo", courseInfoVo);
+	}
+
+	@PostMapping("/update")
+	@ApiOperation("修改课程信息")
+	public Result update(@RequestBody CourseInfoVo courseInfoVo) {
+		String id = courseService.updateByVo(courseInfoVo);
+		return Result.ok().data("id", id);
 	}
 
 }

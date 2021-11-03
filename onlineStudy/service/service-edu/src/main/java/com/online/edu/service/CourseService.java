@@ -15,4 +15,8 @@ import com.online.edu.entity.vo.CourseInfoVo;
 public interface CourseService extends IService<Course> {
 
 	String addCourseInfo(CourseInfoVo courseInfoVo);
+
+	CourseInfoVo getCourseInfoById(String id);
+
+	String updateByVo(CourseInfoVo courseInfoVo);
 }
