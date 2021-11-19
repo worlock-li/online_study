@@ -127,7 +127,14 @@ export default {
     }
   },
 
+  watch: { // 监听
+    $route(to, from) { // 路有变化，方法就会执行
+        this.init()
+    }
+  },
+
   created() {
+    this.init()
     if (this.$route.params && this.$route.params.id) {
         this.getInfoById()
     } else {
@@ -137,16 +144,29 @@ export default {
   },
 
   methods: {
+    // 进入页面时就要调用，点击添加课程菜单时，也要清空
+    init() {
+        if (this.$route.params.id) {
+            this.getInfoById()
+        } else {
+            this.courseInfo = {
+                cover: '/static/sucai.jpg',
+                price: '0', // 价格
+                lessonNum: '0' // 总课时
+            }
+        }
+    },
     // 进入页面根据id获取
     getInfoById() {
         courseApi.getInfoById(this.$route.params.id).then(response => {
 
-            this.courseInfo = response.data.courseInfoVo
+            this.courseInfo = response.data.courseInfoVo;
             // 查询所有的分类
             subjectApi.getAllSubject().then(res => {
+                // 获取所有的一级分类
                 this.subjectOneList = res.data.data
                 for (let i=0; i<this.subjectOneList.length; i++) {
-                    // 遍历所有的一级分类
+                    // 遍历所有的一级分类,获取到当前一级分类下的所有二级分类
                     if (this.courseInfo.subjectParentId === this.subjectOneList[i].id) {
                         this.subjectTwoList = this.subjectOneList[i].children
                     }
@@ -159,18 +179,30 @@ export default {
         })
     },
 
-    // 添加课程基本信息
+    // 添加或者修改课程基本信息
     addCourseInfo(courseInfo) {
       this.$refs[courseInfo].validate((valid) => {
         if (valid) {
-          courseApi.addCourseInfo(this.courseInfo).then(response => {
-            this.$message({
-              type: 'success',
-              message: '添加课程信息成功'
-            })
-            // 跳转到第二步
-            this.$router.push({ path: `/course/chapter/${response.data.id}` })
-          })
+          // 添加或者修改，根据id判断
+            if (this.$route.params && this.$route.params.id) {
+                courseApi.update(this.courseInfo).then(response => {
+                    this.$message({
+                        type: 'success',
+                        message: '修改课程信息成功'
+                    })
+                    // 跳转到第二步
+                    this.$router.push({ path: `/course/chapter/${response.data.id}` })
+                })
+            } else {
+                courseApi.addCourseInfo(this.courseInfo).then(response => {
+                    this.$message({
+                        type: 'success',
+                        message: '添加课程信息成功'
+                    })
+                    // 跳转到第二步
+                    this.$router.push({ path: `/course/chapter/${response.data.id}` })
+                })
+            }
         } else {
           console.log('error submit!!')
           return false

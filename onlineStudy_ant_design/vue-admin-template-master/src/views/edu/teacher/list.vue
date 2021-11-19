@@ -7,7 +7,7 @@
       <el-form-item label="头衔">
         <el-select v-model="teacherQuery.level" placeholder="头衔">
           <el-option label="高级讲师" value="1"/>
-          <el-option label="首席讲师" value="2"/>
+          <el-option label="首席讲师" value="0"/>
         </el-select>
       </el-form-item>
 
@@ -57,7 +57,7 @@
         label="头衔"
         width="200">
         <template slot-scope="scope">
-          <span>{{ scope.row.level == 1 ?'首席讲师':'高级讲师' }}</span>
+          <span>{{ scope.row.level == 0 ?'首席讲师':'高级讲师' }}</span>
         </template>
       </el-table-column>
 
