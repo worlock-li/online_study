@@ -3,12 +3,14 @@ package com.online.edu.controller;
 
 import com.online.commonutils.Result;
 import com.online.edu.entity.vo.CourseInfoVo;
+import com.online.edu.entity.vo.CoursePublishVo;
 import com.online.edu.service.CourseService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -47,6 +49,13 @@ public class CourseController {
 	public Result update(@RequestBody CourseInfoVo courseInfoVo) {
 		String id = courseService.updateByVo(courseInfoVo);
 		return Result.ok().data("id", id);
+	}
+
+	@GetMapping("/courseInfoMap/{id}")
+	@ApiOperation("根据id获取课程的相关信息，基本信息、课程简介、课程讲师、课程分类")
+	public Result courseInfoMap(@PathVariable String id) {
+		CoursePublishVo courseInfoMap = courseService.getCourseInfoVo(id);
+		return Result.ok().data("courseInfoVo", courseInfoMap);
 	}
 
 }

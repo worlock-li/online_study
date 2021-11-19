@@ -3,6 +3,9 @@ package com.online.edu.service;
 import com.online.edu.entity.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.online.edu.entity.vo.CourseInfoVo;
+import com.online.edu.entity.vo.CoursePublishVo;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -19,4 +22,6 @@ public interface CourseService extends IService<Course> {
 	CourseInfoVo getCourseInfoById(String id);
 
 	String updateByVo(CourseInfoVo courseInfoVo);
+
+	CoursePublishVo getCourseInfoVo(String id);
 }

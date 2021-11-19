@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.online.edu.entity.Course;
 import com.online.edu.entity.CourseDescription;
 import com.online.edu.entity.vo.CourseInfoVo;
+import com.online.edu.entity.vo.CoursePublishVo;
 import com.online.edu.mapper.CourseMapper;
 import com.online.edu.service.CourseDescriptionService;
 import com.online.edu.service.CourseService;
@@ -12,6 +13,8 @@ import com.online.servicebase.exceptionhandler.OnlineException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -87,5 +90,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 		courseDescriptionService.updateById(courseDescription);
 
 		return courseInfoVo.getId();
+	}
+
+	@Override
+	public CoursePublishVo getCourseInfoVo(String id) {
+		return baseMapper.getCourseInfoVo(id);
 	}
 }

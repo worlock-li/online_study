@@ -2,6 +2,10 @@ package com.online.edu.mapper;
 
 import com.online.edu.entity.Course;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.online.edu.entity.vo.CoursePublishVo;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CourseMapper extends BaseMapper<Course> {
 
+	CoursePublishVo getCourseInfoVo(String id);
 }
