@@ -115,7 +115,7 @@ export const constantRouterMap = [
         meta: { title: '添加课程', icon: 'form' }
       },
       {
-        path: 'info/:id', // 携带id
+        path: 'edit/:id', // 携带id
         name: '编辑课程基本信息',
         component: () => import('@/views/edu/course/info'),
         meta: { title: '编辑课程基本信息', noCache: true },

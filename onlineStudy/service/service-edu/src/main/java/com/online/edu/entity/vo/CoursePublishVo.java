@@ -14,6 +14,9 @@ public class CoursePublishVo {
 	@ApiModelProperty(value = "总课时")
 	private Integer lessonNum;
 
+	@ApiModelProperty(value = "课程封面图片路径")
+	private String cover;
+
 	@ApiModelProperty(value = "讲师姓名")
 	private String teacherName;
 

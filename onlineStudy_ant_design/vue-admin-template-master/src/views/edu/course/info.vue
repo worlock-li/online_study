@@ -98,7 +98,7 @@ export default {
         subjectParentId: '', // 一级分类id
         subjectId: '', // 二级分类id
         title: '', // 标题
-        price: '', // 价格
+        price: 0, // 价格
         lessonNum: '', // 总课时
         cover: '/static/sucai.jpg', // 课程封面图片路径
         description: '' // 课程简介

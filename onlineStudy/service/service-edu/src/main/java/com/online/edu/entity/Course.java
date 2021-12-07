@@ -2,6 +2,7 @@ package com.online.edu.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -44,7 +45,7 @@ public class Course implements Serializable {
     private String title;
 
     @ApiModelProperty(value = "课程销售价格，设置为0则可免费观看")
-    private Double price;
+    private BigDecimal price;
 
     @ApiModelProperty(value = "总课时")
     private Integer lessonNum;
@@ -65,6 +66,7 @@ public class Course implements Serializable {
     private String status;
 
     @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
+    @TableLogic
     private Integer isDeleted;
 
     @ApiModelProperty(value = "创建时间")

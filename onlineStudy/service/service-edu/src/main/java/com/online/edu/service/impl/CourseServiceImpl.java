@@ -1,19 +1,24 @@
 package com.online.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.online.edu.entity.Chapter;
 import com.online.edu.entity.Course;
 import com.online.edu.entity.CourseDescription;
+import com.online.edu.entity.Video;
 import com.online.edu.entity.vo.CourseInfoVo;
 import com.online.edu.entity.vo.CoursePublishVo;
 import com.online.edu.mapper.CourseMapper;
+import com.online.edu.service.ChapterService;
 import com.online.edu.service.CourseDescriptionService;
 import com.online.edu.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.online.edu.service.VideoService;
 import com.online.servicebase.exceptionhandler.OnlineException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +34,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
 	@Autowired
 	CourseDescriptionService courseDescriptionService;
+	@Autowired
+	ChapterService chapterService;
+	@Autowired
+	VideoService videoService;
 
 	@Override
 	public String addCourseInfo(CourseInfoVo courseInfoVo) {
@@ -36,6 +45,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 		// 添加基本信息表中插入数据
 		Course course = new Course();
 		BeanUtils.copyProperties(courseInfoVo, course);
+		course.setStatus("Draft");
 		int insert = baseMapper.insert(course);
 		if (insert == 0) {
 			throw new OnlineException(20001, "添加课程失败");
@@ -95,5 +105,30 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 	@Override
 	public CoursePublishVo getCourseInfoVo(String id) {
 		return baseMapper.getCourseInfoVo(id);
+	}
+
+	@Override
+	public void removeCourse(String id) {
+		// 删除课程
+		baseMapper.deleteById(id);
+
+		// 删除描述
+		courseDescriptionService.removeById(id);
+
+		// 删除章节
+		QueryWrapper<Chapter> chapterQueryWrapper = new QueryWrapper<>();
+		chapterQueryWrapper.eq("course_id", id);
+		List<Chapter> list = chapterService.list(chapterQueryWrapper);
+		if (list.size() > 0) {
+			chapterService.removeById(list.get(0).getId());
+		}
+
+		// 删除小节
+		QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
+		videoQueryWrapper.eq("course_id", id);
+		List<Video> list1 = videoService.list(videoQueryWrapper);
+		if (list1.size() > 0) {
+			videoService.removeById(list1.get(0).getId());
+		}
 	}
 }
