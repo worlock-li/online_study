@@ -17,7 +17,9 @@ import com.online.servicebase.exceptionhandler.OnlineException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 	ChapterService chapterService;
 	@Autowired
 	VideoService videoService;
+	@Resource
+	CourseMapper courseMapper;
+
 
 	@Override
 	public String addCourseInfo(CourseInfoVo courseInfoVo) {
@@ -69,9 +74,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 	 * @return
 	 */
 	@Override
+	@Transactional
 	public CourseInfoVo getCourseInfoById(String id) {
 		// 获取课程基本信息
-		Course course = baseMapper.selectById(id);
+		Course course = courseMapper.selectById(id);
 		CourseInfoVo courseInfoVo = new CourseInfoVo();
 		BeanUtils.copyProperties(course, courseInfoVo);
 
@@ -108,6 +114,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 	}
 
 	@Override
+	@Transactional
 	public void removeCourse(String id) {
 		// 删除课程
 		baseMapper.deleteById(id);
