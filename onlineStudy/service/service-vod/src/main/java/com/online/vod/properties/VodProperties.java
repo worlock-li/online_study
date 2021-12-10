@@ -17,7 +17,7 @@ public class VodProperties implements InitializingBean {
 	public static String KEY_SECRET;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		KEY_ID = keyId;
 		KEY_SECRET = keySecret;
 	}

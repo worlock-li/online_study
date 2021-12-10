@@ -46,7 +46,11 @@
 
         <el-form-item label="上传视频">
           <el-upload
-            :action="BASE_API+'/eduvod/video/uploadAlyiVideo'"
+            :on-success="handlerVodUploadSuccess"
+            :on-remove="handlerVodRemove"
+            :before-remove="beforeRemove"
+            :on-exceed="handlerVodExceed"
+            :action="BASE_API+'vod/video/vodUpload'"
             :limit="1"
             class="upload-demo">
             <el-button size="small" type="primary">上传视频</el-button>
@@ -115,15 +119,16 @@ export default {
       chapterVideoList: [],
       courseId: '',
       dialogFormVisible: false, // 添加章节弹框， 默认为false
-      BASE_API: process.env.BASE_API, // 接口基本地址
-
       formLabelWidth: '120px',
       chapter: { // 章节数据
       },
       video: { // 小节数据
-          free: true
       },
       dialogVideoFormVisible: false, // 添加小节弹框， 默认为false
+
+      BASE_API: process.env.BASE_API, // 接口基本地址
+      fileList: [],
+
       rules: {
           title: [
               {required: true, message: '请输入讲师名称', trigger: 'blur'},
@@ -321,6 +326,23 @@ export default {
               });
           });
       },
+
+    handlerVodUploadSuccess() {
+        this.$message({
+            type: 'success',
+            message: '上传成功!'
+        });
+    },
+
+    handlerVodRemove() {
+
+    },
+    beforeRemove() {
+
+    },
+    handlerVodExceed() {
+
+    },
 
     next() {
       this.$router.push({ path: '/course/publish/' + this.courseId })
