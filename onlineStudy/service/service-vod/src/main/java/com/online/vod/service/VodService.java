@@ -5,4 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface VodService {
 
 	String vodUpload(MultipartFile file);
+
+	void removeVod(String id);
 }

@@ -38,7 +38,7 @@
           <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
         </el-form-item>
         <el-form-item label="是否免费">
-          <el-radio-group v-model="video.free">
+          <el-radio-group v-model="video.isFree">
             <el-radio :label="true">免费</el-radio>
             <el-radio :label="false">默认</el-radio>
           </el-radio-group>
@@ -50,6 +50,7 @@
             :on-remove="handlerVodRemove"
             :before-remove="beforeRemove"
             :on-exceed="handlerVodExceed"
+            :file-list="fileList"
             :action="BASE_API+'vod/video/vodUpload'"
             :limit="1"
             class="upload-demo">
@@ -255,8 +256,22 @@ export default {
       // 点击修改小节按钮
       openVideoEditForm(id) {
           videoApi.getVideoById(id).then(response => {
+
               // 根据id获取显示
               this.video = response.data.video
+
+              // 是否免费
+              if (this.video.isFree === 'true') {
+                  this.video.isFree = true
+              } else {
+                  this.video.isFree = false
+              }
+              console.log(this.video)
+              if (this.video.videoOriginalName !== "") {
+                  this.fileList = [{name:this.video.videoOriginalName}]
+              } else {
+                  this.fileList = []
+              }
               this.dialogVideoFormVisible = true
           })
       },
@@ -327,21 +342,41 @@ export default {
           });
       },
 
-    handlerVodUploadSuccess() {
+    // 上传视频文件
+    handlerVodUploadSuccess(response, file, fileList) {
+        // 保存到数据库
+        this.video.videoSourceId = response.data.vodId;
+        this.video.videoOriginalName = file.name;
         this.$message({
             type: 'success',
             message: '上传成功!'
         });
     },
 
+    // 点击删除按钮---删除视频
+    beforeRemove(file) {
+      return this.$confirm(`确认移除${file.name}?`)
+    },
+
+    // 确认删除
     handlerVodRemove() {
-
+        videoApi.removeVod(this.video.videoSourceId).then(response => {
+            this.$message({
+                type: 'success',
+                message: '删除视频成功!'
+            });
+            // 清空文件列表
+            this.fileList = []
+            this.video.videoSourceId = ''
+            this.video.videoOriginalName = ''
+        })
     },
-    beforeRemove() {
 
-    },
     handlerVodExceed() {
-
+        this.$message({
+            type: 'warning',
+            message: '已有视频,若想重新上传,先删除已有视频!'
+        });
     },
 
     next() {

@@ -28,11 +28,19 @@ export default {
     })
   },
 
-  // 根据id删除
+  // 根据id删除小节
   deleteById(id) {
     return request({
       url: '/eduService/video/delete/' + id,
       method: 'delete',
     })
   },
+
+  // 根据id删除小节
+  removeVod(id) {
+    return request({
+      url: '/vod/video/removeVod/' + id,
+      method: 'delete',
+    })
+  }
 }

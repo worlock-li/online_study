@@ -3,6 +3,11 @@ package com.online.vod.service.impl;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
+import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+import com.online.servicebase.exceptionhandler.OnlineException;
+import com.online.vod.handler.InitClient;
 import com.online.vod.properties.VodProperties;
 import com.online.vod.service.VodService;
 import org.springframework.stereotype.Service;
@@ -41,6 +46,23 @@ public class VodServiceImpl implements VodService {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	@Override
+	public void removeVod(String id) {
+		DefaultAcsClient client = InitClient.initVodClient(VodProperties.KEY_ID, VodProperties.KEY_SECRET);
+		// 获取request
+		DeleteVideoRequest request = new DeleteVideoRequest();
+		//支持传入多个视频ID，多个用逗号分隔
+		request.setVideoIds(id);
+
+		try {
+			// 调用client里面的方法删除视频
+			client.getAcsResponse(request);
+		} catch (Exception e) {
+			System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+			throw new OnlineException(20001, "删除视频失败");
 		}
 	}
 }
