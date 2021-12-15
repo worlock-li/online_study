@@ -246,6 +246,8 @@ export default {
       openVideoAddForm(chapterId) {
           // 清空对象
           this.video = {sort: 0}
+          // 清空视频列表
+          this.fileList = []
           // 弹框
           this.dialogVideoFormVisible = true
           // 设置章节id、课程id
