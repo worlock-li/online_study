@@ -316,6 +316,7 @@ export default {
                   } else { // 添加
                       this.addVideo()
                   }
+                  this.fileList = []
               }
           })
       },

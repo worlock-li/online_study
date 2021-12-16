@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/vod/video")
@@ -28,6 +29,14 @@ public class VodController {
 	@ApiOperation("删除视频")
 	public Result removeVod(@PathVariable String id) {
 		vodService.removeVod(id);
+		return Result.ok().message("删除成功");
+	}
+
+	@DeleteMapping("/removeBatchVod")
+	@ApiOperation("删除多个视频")
+	public Result removeBatchVod(@RequestParam("vodIdList") List<String> vodIdList) {
+		System.out.println(vodIdList);
+		vodService.removeBatchVod(vodIdList);
 		return Result.ok().message("删除成功");
 	}
 }

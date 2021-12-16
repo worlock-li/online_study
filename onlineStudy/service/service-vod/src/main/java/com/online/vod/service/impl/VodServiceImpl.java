@@ -10,11 +10,13 @@ import com.online.servicebase.exceptionhandler.OnlineException;
 import com.online.vod.handler.InitClient;
 import com.online.vod.properties.VodProperties;
 import com.online.vod.service.VodService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Service
 public class VodServiceImpl implements VodService {
@@ -56,6 +58,23 @@ public class VodServiceImpl implements VodService {
 		DeleteVideoRequest request = new DeleteVideoRequest();
 		//支持传入多个视频ID，多个用逗号分隔
 		request.setVideoIds(id);
+
+		try {
+			// 调用client里面的方法删除视频
+			client.getAcsResponse(request);
+		} catch (Exception e) {
+			System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+			throw new OnlineException(20001, "删除视频失败");
+		}
+	}
+
+	@Override
+	public void removeBatchVod(List<String> vodId) {
+		DefaultAcsClient client = InitClient.initVodClient(VodProperties.KEY_ID, VodProperties.KEY_SECRET);
+		// 获取request
+		DeleteVideoRequest request = new DeleteVideoRequest();
+		//支持传入多个视频ID，多个用逗号分隔
+		request.setVideoIds(StringUtils.join(vodId, ","));
 
 		try {
 			// 调用client里面的方法删除视频
