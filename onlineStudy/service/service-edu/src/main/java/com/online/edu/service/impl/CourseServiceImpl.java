@@ -1,6 +1,7 @@
 package com.online.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.online.commonutils.Result;
 import com.online.edu.client.VodClient;
 import com.online.edu.entity.Chapter;
 import com.online.edu.entity.Course;
@@ -35,8 +36,13 @@ import java.util.Map;
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
 
+	// 构造器注入
+	private CourseDescriptionService courseDescriptionService;
 	@Autowired
-	CourseDescriptionService courseDescriptionService;
+	public CourseServiceImpl(CourseDescriptionService courseDescriptionService) {
+		this.courseDescriptionService = courseDescriptionService;
+	}
+
 	@Autowired
 	ChapterService chapterService;
 	@Autowired
@@ -139,7 +145,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 		List<String> videoSourceIdList = videoService.getVideoSourceIdByCourseId(id);
 		// 调用方法删除多个视频
 		if (!videoSourceIdList.isEmpty()) {
-			vodClient.removeBatchVod(videoSourceIdList);
+			Result result = vodClient.removeBatchVod(videoSourceIdList);
+			if (!result.isSuccess()) {
+				throw new OnlineException(20001, "删除视频失败，执行了熔断器");
+			}
 		}
 		QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();
 		videoQueryWrapper.eq("course_id", id);
